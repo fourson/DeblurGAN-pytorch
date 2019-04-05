@@ -21,7 +21,7 @@ def get_lr_lambda(lr_lambda):
 
 def get_lr_scheduler(lr_scheduler_config, optimizer):
     lr_scheduler_class = getattr(torch.optim.lr_scheduler, lr_scheduler_config['type'])
-    if isinstance(lr_scheduler_class, torch.optim.lr_scheduler.LambdaLR):
+    if lr_scheduler_config['type'] == 'LambdaLR':
         lr_lambda = get_lr_lambda(lr_scheduler_config['args']['lr_lambda'])
         return lr_scheduler_class(optimizer, lr_lambda)
     else:
