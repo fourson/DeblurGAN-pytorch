@@ -70,7 +70,7 @@ class MinibatchDiscrimination(nn.Module):
         self.out_features = out_features  # B
         self.kernel_dims = kernel_dims  # C
         self.mean = mean
-        self.T = nn.Parameter(torch.tensor(in_features, out_features, kernel_dims)).cuda()  # AxBxC
+        self.T = nn.Parameter(torch.Tensor(in_features, out_features, kernel_dims)).cuda()  # AxBxC
         nn.init.normal_(self.T, 0, 1)
 
     def forward(self, x):
