@@ -28,12 +28,6 @@ def get_lr_scheduler(lr_scheduler_config, optimizer):
         return lr_scheduler_class(optimizer, **lr_scheduler_config['args'])
 
 
-def batch_denormalize(tensor, mean, std):
-    # convert mean and std to tensor
-    mean = torch.tensor(mean)
-    std = torch.tensor(std)
-    # tensor: (N,C,H,W)
-    # denormalize dims excluding the batch_dim
-    for i in range(tensor.size(0)):
-        tensor[i] = transforms.Normalize((-mean / std).tolist(), (1.0 / std).tolist())(tensor[i])
-    return tensor
+def denormalize(image_tensor):
+    # denormalize the normalized image tensor(N,C,H,W) with mean=0.5 and std=0.5 for each channel
+    return (image_tensor + 1) / 2.0

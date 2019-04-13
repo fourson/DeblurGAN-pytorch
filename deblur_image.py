@@ -8,7 +8,7 @@ from PIL import Image
 import torch
 
 import model.model as module_arch
-from utils.util import batch_denormalize
+from utils.util import denormalize
 
 
 def main(blurred_dir, deblurred_dir, resume):
@@ -39,7 +39,7 @@ def main(blurred_dir, deblurred_dir, resume):
             blurred_img = Image.open(os.path.join(blurred_dir, image_name)).convert('RGB')
             blurred = transform(blurred_img).unsqueeze(0).to(device)
             deblurred = generator(blurred)
-            deblurred_img = to_pil_image(batch_denormalize(deblurred, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5)).squeeze().cpu())
+            deblurred_img = to_pil_image(denormalize(deblurred).squeeze().cpu())
             deblurred_img.save(os.path.join(deblurred_dir, 'deblurred ' + image_name))
 
 

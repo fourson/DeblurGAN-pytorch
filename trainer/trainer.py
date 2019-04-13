@@ -5,7 +5,7 @@ import torch
 from torchvision.utils import make_grid
 
 from base.base_trainer import BaseTrainer
-from utils.util import batch_denormalize
+from utils.util import denormalize
 
 
 class Trainer(BaseTrainer):
@@ -68,12 +68,9 @@ class Trainer(BaseTrainer):
             deblurred = self.generator(blurred)
 
             # save blurred, sharp and deblurred image
-            self.writer.add_image('blurred',
-                                  make_grid(batch_denormalize(blurred.cpu(), (0.5, 0.5, 0.5), (0.5, 0.5, 0.5))))
-            self.writer.add_image('sharp',
-                                  make_grid(batch_denormalize(sharp.cpu(), (0.5, 0.5, 0.5), (0.5, 0.5, 0.5))))
-            self.writer.add_image('deblurred',
-                                  make_grid(batch_denormalize(deblurred.cpu(), (0.5, 0.5, 0.5), (0.5, 0.5, 0.5))))
+            self.writer.add_image('blurred', make_grid(denormalize(blurred).cpu()))
+            self.writer.add_image('sharp', make_grid(denormalize(sharp).cpu()))
+            self.writer.add_image('deblurred', make_grid(denormalize(deblurred).cpu()))
 
             # get D's output
             sharp_discriminator_out = self.discriminator(sharp)
