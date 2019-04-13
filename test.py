@@ -9,6 +9,7 @@ import data_loader.data_loader as module_data
 import model.loss as module_loss
 import model.metric as module_metric
 import model.model as module_arch
+from utils.util import denormalize
 
 
 def main(config, resume):
@@ -60,6 +61,9 @@ def main(config, resume):
             deblurred = generator(blurred)
             deblurred_discriminator_out = discriminator(deblurred)
 
+            denormalized_deblurred = denormalize(deblurred)
+            denormalized_sharp = denormalize(sharp)
+
             # computing loss, metrics on test set
             content_loss_lambda = config['others']['content_loss_lambda']
             adversarial_loss_fn = loss_fn['adversarial']
@@ -71,7 +75,7 @@ def main(config, resume):
 
             total_loss += loss.item()
             for i, metric in enumerate(metric_fns):
-                total_metrics[i] += metric(deblurred, sharp)
+                total_metrics[i] += metric(denormalized_deblurred, denormalized_sharp)
 
     n_samples = len(data_loader)
     log = {'loss': total_loss / n_samples}
