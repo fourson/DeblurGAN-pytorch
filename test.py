@@ -12,11 +12,21 @@ import model.model as module_arch
 from utils.util import denormalize
 
 
-def main(config, resume):
+def main(resume):
+    # load checkpoint
+    checkpoint = torch.load(resume)
+    config = checkpoint['config']
+
     # setup data_loader instances
     data_loader_class = getattr(module_data, config['data_loader']['type'])
-    config['data_loader']['args']['validation_split'] = 0.0  # do not split, just use the full dataset
-    data_loader = data_loader_class(**config['data_loader']['args'])
+    data_loader_config_args = {
+        "data_dir": config['data_loader']['args']['data_dir'],
+        'batch_size': 512,  # use large batch_size
+        'shuffle': False,  # do not shuffle
+        'validation_split': 0.0,  # do not split, just use the full dataset
+        'num_workers': 16  # use large num_workers
+    }
+    data_loader = data_loader_class(**data_loader_config_args)
 
     # build model architecture
     generator_class = getattr(module_arch, config['generator']['type'])
@@ -31,9 +41,6 @@ def main(config, resume):
     # get function handles of loss and metrics
     loss_fn = {k: getattr(module_loss, v) for k, v in config['loss'].items()}
     metric_fns = [getattr(module_metric, met) for met in config['metrics']]
-
-    # load checkpoint
-    checkpoint = torch.load(resume)
 
     # prepare model for testing
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -53,7 +60,6 @@ def main(config, resume):
     total_metrics = np.zeros(len(metric_fns))
 
     with torch.no_grad():
-        # for batch_idx, sample in enumerate(data_loader):
         for batch_idx, sample in enumerate(tqdm(data_loader)):
             blurred = sample['blurred'].to(device)
             sharp = sample['sharp'].to(device)
@@ -86,17 +92,12 @@ def main(config, resume):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='DeblurGAN')
 
-    parser.add_argument('-r', '--resume', default=None, type=str, help='path to latest checkpoint (default: None)')
+    parser.add_argument('-r', '--resume', required=True, type=str, help='path to latest checkpoint')
     parser.add_argument('-d', '--device', default=None, type=str, help='indices of GPUs to enable (default: all)')
 
     args = parser.parse_args()
 
-    if args.resume:
-        config = torch.load(args.resume)['config']
-    else:
-        raise AssertionError("Checkpoint file need to be specified. Add '-r model_best.pth', for example.")
-
     if args.device:
         os.environ["CUDA_VISIBLE_DEVICES"] = args.device
 
-    main(config, args.resume)
+    main(args.resume)

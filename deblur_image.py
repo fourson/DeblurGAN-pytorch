@@ -2,12 +2,12 @@ import os
 import argparse
 
 from tqdm import tqdm
-from torchvision import transforms
 from torchvision.transforms.functional import to_pil_image
-from PIL import Image
 import torch
 
 import model.model as module_arch
+import model.metric as module_metric
+from data_loader.data_loader import CustomDataLoader
 from utils.util import denormalize
 
 
@@ -16,30 +16,38 @@ def main(blurred_dir, deblurred_dir, resume):
     checkpoint = torch.load(resume)
     config = checkpoint['config']
 
+    # setup data_loader instances
+    data_loader = CustomDataLoader(data_dir=blurred_dir)
+
     # build model architecture
     generator_class = getattr(module_arch, config['generator']['type'])
     generator = generator_class(**config['generator']['args'])
+
+    generator.summary()
+
+    # get function handles of loss and metrics
+    metric_fns = [getattr(module_metric, met) for met in config['metrics']]
 
     # prepare model for deblurring
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     generator.to(device)
     if config['n_gpu'] > 1:
         generator = torch.nn.DataParallel(generator)
+
     generator.load_state_dict(checkpoint['generator'])
 
     generator.eval()
 
     # start to deblur
-    transform = transforms.Compose([
-        transforms.ToTensor(),  # convert to tensor
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # normalize
-    ])
     with torch.no_grad():
-        for image_name in tqdm(os.listdir(blurred_dir)):
-            blurred_img = Image.open(os.path.join(blurred_dir, image_name)).convert('RGB')
-            blurred = transform(blurred_img).unsqueeze(0).to(device)
+        for batch_idx, sample in enumerate(tqdm(data_loader)):
+            blurred = sample['blurred'].to(device)
+            image_name = sample['image_name']
+
             deblurred = generator(blurred)
+
             deblurred_img = to_pil_image(denormalize(deblurred).squeeze().cpu())
+
             deblurred_img.save(os.path.join(deblurred_dir, 'deblurred ' + image_name))
 
 
