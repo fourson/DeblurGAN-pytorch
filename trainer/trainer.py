@@ -67,10 +67,16 @@ class Trainer(BaseTrainer):
             # get G's output
             deblurred = self.generator(blurred)
 
+            # denormalize
+            with torch.no_grad():
+                denormalized_blurred = denormalize(blurred)
+                denormalized_sharp = denormalize(sharp)
+                denormalized_deblurred = denormalize(deblurred)
+
             # save blurred, sharp and deblurred image
-            self.writer.add_image('blurred', make_grid(denormalize(blurred).cpu()))
-            self.writer.add_image('sharp', make_grid(denormalize(sharp).cpu()))
-            self.writer.add_image('deblurred', make_grid(denormalize(deblurred).cpu()))
+            self.writer.add_image('blurred', make_grid(denormalized_blurred.cpu()))
+            self.writer.add_image('sharp', make_grid(denormalized_sharp.cpu()))
+            self.writer.add_image('deblurred', make_grid(denormalized_deblurred.cpu()))
 
             # get D's output
             sharp_discriminator_out = self.discriminator(sharp)
@@ -146,7 +152,7 @@ class Trainer(BaseTrainer):
             total_generator_loss += generator_loss.item()
 
             # calculate the metrics
-            total_metrics += self._eval_metrics(deblurred, sharp)
+            total_metrics += self._eval_metrics(denormalized_deblurred, denormalized_sharp)
 
             if self.verbosity >= 2 and batch_idx % self.log_step == 0:
                 self.logger.info(
@@ -212,7 +218,7 @@ class Trainer(BaseTrainer):
                 self.writer.add_scalar('loss_g', loss_g.item())
                 total_val_loss += loss_g.item()
 
-                total_val_metrics += self._eval_metrics(deblurred, sharp)
+                total_val_metrics += self._eval_metrics(denormalize(deblurred), denormalize(sharp))
 
         # add histogram of model parameters to the tensorboard
         for name, p in self.generator.named_parameters():
