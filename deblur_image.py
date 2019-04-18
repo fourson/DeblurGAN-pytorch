@@ -40,7 +40,7 @@ def main(blurred_dir, deblurred_dir, resume):
 
     # start to deblur
     with torch.no_grad():
-        for batch_idx, sample in enumerate(tqdm(data_loader)):
+        for batch_idx, sample in enumerate(tqdm(data_loader, ascii=True)):
             blurred = sample['blurred'].to(device)
             image_name = sample['image_name']
 

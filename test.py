@@ -60,7 +60,7 @@ def main(resume):
     total_metrics = np.zeros(len(metric_fns))
 
     with torch.no_grad():
-        for batch_idx, sample in enumerate(tqdm(data_loader)):
+        for batch_idx, sample in enumerate(tqdm(data_loader, ascii=True)):
             blurred = sample['blurred'].to(device)
             sharp = sample['sharp'].to(device)
 
