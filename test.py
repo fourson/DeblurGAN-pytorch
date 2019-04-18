@@ -21,7 +21,7 @@ def main(resume):
     data_loader_class = getattr(module_data, config['data_loader']['type'])
     data_loader_config_args = {
         "data_dir": config['data_loader']['args']['data_dir'],
-        'batch_size': 512,  # use large batch_size
+        'batch_size': 256,  # use large batch_size
         'shuffle': False,  # do not shuffle
         'validation_split': 0.0,  # do not split, just use the full dataset
         'num_workers': 16  # use large num_workers
