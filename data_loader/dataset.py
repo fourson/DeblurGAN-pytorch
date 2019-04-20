@@ -41,7 +41,48 @@ class GoProDataset(Dataset):
             w_offset = random.randint(0, self.width - self.fine_size)
             blurred = blurred[:, h_offset:h_offset + self.fine_size, w_offset:w_offset + self.fine_size]
             sharp = sharp[:, h_offset:h_offset + self.fine_size, w_offset:w_offset + self.fine_size]
+
         return {'blurred': blurred, 'sharp': sharp}
+
+
+class GoProAlignedDataset(Dataset):
+    """
+        GoPro aligned dataset
+    """
+
+    def __init__(self, data_dir='aligned_data', transform=None, height=360, width=1280, fine_size=256):
+        self.data_dir = data_dir
+        self.image_names = os.listdir(self.data_dir)
+
+        self.transform = transform
+
+        assert height >= fine_size and width >= fine_size * 2
+        self.height = height
+        self.width = width
+        self.fine_size = fine_size
+
+    def __len__(self):
+        return len(self.image_names)
+
+    def __getitem__(self, index):
+        aligned = Image.open(os.path.join(self.data_dir, self.image_names[index])).convert('RGB')
+
+        if self.transform:
+            aligned = self.transform(aligned)
+
+            # crop image tensor to defined size
+            # we assume that self.transform contains ToTensor()
+            assert isinstance(aligned, torch.Tensor)
+            h = self.height
+            w = int(self.width / 2)
+            h_offset = random.randint(0, h - self.fine_size)
+            w_offset = random.randint(0, w - self.fine_size)
+            blurred = aligned[:, h_offset:h_offset + self.fine_size, w_offset:w_offset + self.fine_size]
+            sharp = aligned[:, h_offset:h_offset + self.fine_size, w_offset + w:w_offset + w + self.fine_size]
+            return {'blurred': blurred, 'sharp': sharp}
+
+        else:
+            return {'aligned': aligned}
 
 
 class CustomDataset(Dataset):

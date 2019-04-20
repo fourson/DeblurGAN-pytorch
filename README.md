@@ -13,6 +13,7 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
   ├── deblur_image.py - deblur your own images
   ├── test.py - evaluation of trained model
   ├── train.py - main script to start training
+  ├── make_aligned_data.py - make aligned data
   ├── config.json - config file
   │
   ├── base/ - abstract base classes
@@ -132,6 +133,11 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
 * **Deblur**
 ```
     python deblur_image.py --blurred path/to/blurred_images --deblurred path/to/deblurred_images --resume path/to/checkpoint
+```
+
+* **Make aligned data first if you want to use aligned dataset**
+```
+    python make_aligned_data.py --blurred path/to/blurred_images --sharp path/to/sharp_images --aligned path/to/aligned_images
 ```
 
 ## Acknowledgements

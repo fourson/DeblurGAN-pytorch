@@ -93,7 +93,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='DeblurGAN')
 
     parser.add_argument('-r', '--resume', required=True, type=str, help='path to latest checkpoint')
-    parser.add_argument('-d', '--device', default=None, type=str, help='indices of GPUs to enable (default: all)')
+    parser.add_argument('--device', default=None, type=str, help='indices of GPUs to enable (default: all)')
 
     args = parser.parse_args()
 

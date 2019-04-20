@@ -57,7 +57,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--blurred', required=True, type=str, help='dir of blurred images')
     parser.add_argument('-d', '--deblurred', required=True, type=str, help='dir to save deblurred images')
     parser.add_argument('-r', '--resume', required=True, type=str, help='path to latest checkpoint')
-    parser.add_argument('-d', '--device', default=None, type=str, help='indices of GPUs to enable (default: all)')
+    parser.add_argument('--device', default=None, type=str, help='indices of GPUs to enable (default: all)')
 
     args = parser.parse_args()
 

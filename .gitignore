@@ -1,4 +1,5 @@
 /data
+/aligned_data
 /saved
 /.idea
 */__pycache__/
