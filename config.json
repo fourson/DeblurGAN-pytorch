@@ -60,6 +60,6 @@
     },
     "others": {
         "gp_lambda": 10,
-        "content_loss_lambda": 1
+        "content_loss_lambda": 100
     }
 }
