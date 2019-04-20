@@ -1,5 +1,6 @@
 import functools
 
+import torch
 import torch.nn as nn
 
 from .layer_utils import get_norm_layer, ResNetBlock, MinibatchDiscrimination
@@ -62,7 +63,7 @@ class ResNetGenerator(BaseModel):
     def forward(self, x):
         out = self.model(x)
         if self.learn_residual:
-            out = (out + x) / 2.0
+            out = torch.clamp(out, min=-1, max=1)  # clamp to [-1,1] according to normalization(mean=0.5, var=0.5)
         return out
 
 
@@ -124,4 +125,3 @@ class NLayerDiscriminator(BaseModel):
             a = out.size(1)
             out = MinibatchDiscrimination(a, a, 3)(out)
         return out
-

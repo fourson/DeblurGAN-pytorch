@@ -1,12 +1,12 @@
 import torch
 import torch.nn.functional as F
 import torch.autograd as autograd
-from torchvision import models
+
+from .layer_utils import CONV3_3_IN_VGG_19
 
 
 def perceptual_loss(deblurred, sharp):
-    conv_3_3_layer = 15  # index of layer conv3.3 in vgg19
-    model = models.vgg19(pretrained=True).features[:conv_3_3_layer].cuda()
+    model = CONV3_3_IN_VGG_19
 
     # feature map of the output and target
     deblurred_feature_map = model.forward(deblurred)

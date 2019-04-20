@@ -2,6 +2,9 @@ import functools
 
 import torch
 import torch.nn as nn
+from torchvision import models
+
+CONV3_3_IN_VGG_19 = models.vgg19(pretrained=True).features[:15].cuda()
 
 
 def get_norm_layer(norm_type='instance'):
