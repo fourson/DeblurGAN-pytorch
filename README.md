@@ -14,7 +14,8 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
   ├── test.py - evaluation of trained model
   ├── train.py - main script to start training
   ├── make_aligned_data.py - make aligned data
-  ├── config.json - config file
+  ├── config.json - demo config file
+  ├── config_aligned.json - demo config file using aligned dataset
   │
   ├── base/ - abstract base classes
   │   ├── base_data_loader.py - abstract base class for data loaders
