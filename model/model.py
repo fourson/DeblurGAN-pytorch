@@ -63,6 +63,7 @@ class ResNetGenerator(BaseModel):
     def forward(self, x):
         out = self.model(x)
         if self.learn_residual:
+            out = x + out
             out = torch.clamp(out, min=-1, max=1)  # clamp to [-1,1] according to normalization(mean=0.5, var=0.5)
         return out
 
