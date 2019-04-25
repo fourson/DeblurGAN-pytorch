@@ -1,7 +1,6 @@
 import os
 
 import torch
-from torchvision import transforms
 
 
 def ensure_dir(path):

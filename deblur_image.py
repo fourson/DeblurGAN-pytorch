@@ -42,7 +42,7 @@ def main(blurred_dir, deblurred_dir, resume):
     with torch.no_grad():
         for batch_idx, sample in enumerate(tqdm(data_loader, ascii=True)):
             blurred = sample['blurred'].to(device)
-            image_name = sample['image_name']
+            image_name = sample['image_name'][0]
 
             deblurred = generator(blurred)
 
