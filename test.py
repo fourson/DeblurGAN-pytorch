@@ -35,9 +35,6 @@ def main(resume):
     discriminator_class = getattr(module_arch, config['discriminator']['type'])
     discriminator = discriminator_class(**config['discriminator']['args'])
 
-    generator.summary()
-    discriminator.summary()
-
     # get function handles of loss and metrics
     loss_fn = {k: getattr(module_loss, v) for k, v in config['loss'].items()}
     metric_fns = [getattr(module_metric, met) for met in config['metrics']]
