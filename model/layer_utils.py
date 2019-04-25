@@ -11,7 +11,9 @@ def get_norm_layer(norm_type='instance'):
     if norm_type == 'batch':
         norm_layer = nn.BatchNorm2d
     elif norm_type == 'instance':
-        norm_layer = functools.partial(nn.InstanceNorm2d, track_running_stats=True)
+        # we should never set track_running_stats to True in InstanceNorm
+        # because it behaves differently in training and testing mode
+        norm_layer = functools.partial(nn.InstanceNorm2d, track_running_stats=False)
     else:
         raise NotImplementedError('normalization layer [%s] is not found' % norm_type)
     return norm_layer

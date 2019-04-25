@@ -1,12 +1,12 @@
 import os
 import argparse
+import math
 
 from tqdm import tqdm
 from torchvision.transforms.functional import to_pil_image
 import torch
 
 import model.model as module_arch
-import model.metric as module_metric
 from data_loader.data_loader import CustomDataLoader
 from utils.util import denormalize
 
@@ -22,11 +22,6 @@ def main(blurred_dir, deblurred_dir, resume):
     # build model architecture
     generator_class = getattr(module_arch, config['generator']['type'])
     generator = generator_class(**config['generator']['args'])
-
-    generator.summary()
-
-    # get function handles of loss and metrics
-    metric_fns = [getattr(module_metric, met) for met in config['metrics']]
 
     # prepare model for deblurring
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -44,7 +39,17 @@ def main(blurred_dir, deblurred_dir, resume):
             blurred = sample['blurred'].to(device)
             image_name = sample['image_name'][0]
 
-            deblurred = generator(blurred)
+            # crop the image to 256*256 patches and feed them into the GAN
+            deblurred = torch.zeros_like(blurred)
+            N, C, H, W = blurred.size()
+            fine_size_h = fine_size_w = 256
+            h_patch_num = math.ceil(H / fine_size_h)
+            w_patch_num = math.ceil(W / fine_size_w)
+            for i in range(h_patch_num):
+                for j in range(w_patch_num):
+                    deblurred[:, :, i * fine_size_h:(i + 1) * fine_size_h, j * fine_size_w:(j + 1) * fine_size_w] \
+                        = generator(
+                        blurred[:, :, i * fine_size_h:(i + 1) * fine_size_h, j * fine_size_w:(j + 1) * fine_size_w])
 
             deblurred_img = to_pil_image(denormalize(deblurred).squeeze().cpu())
 
