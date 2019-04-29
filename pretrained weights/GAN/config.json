@@ -1,0 +1,67 @@
+{
+    "name": "DeblurGAN",
+    "n_gpu": 1,
+    "data_loader": {
+        "type": "GoProAlignedDataLoader",
+        "args": {
+            "data_dir": "aligned_data/",
+            "batch_size": 1,
+            "shuffle": false,
+            "validation_split": 0,
+            "num_workers": 4
+        }
+    },
+    "generator": {
+        "type": "ResNetGenerator",
+        "args": {
+            "input_nc": 3,
+            "output_nc": 3,
+            "use_dropout": false
+        }
+    },
+    "discriminator": {
+        "type": "NLayerDiscriminator",
+        "args": {
+            "input_nc": 3,
+            "use_sigmoid": true
+        }
+    },
+    "loss": {
+        "adversarial": "gan_loss",
+        "content": "perceptual_loss"
+    },
+    "metrics": [
+        "PSNR"
+    ],
+    "optimizer": {
+        "type": "Adam",
+        "args": {
+            "lr": 0.0001,
+            "betas": [
+                0.5,
+                0.999
+            ],
+            "weight_decay": 0,
+            "amsgrad": true
+        }
+    },
+    "lr_scheduler": {
+        "type": "LambdaLR",
+        "args": {
+            "lr_lambda": "origin_lr_scheduler"
+        }
+    },
+    "trainer": {
+        "epochs": 300,
+        "save_dir": "saved2/",
+        "save_period": 5,
+        "verbosity": 2,
+        "monitor": "max PSNR",
+        "tensorboardX": true,
+        "log_dir": "saved2/runs"
+    },
+    "others": {
+        "gp_lambda": 10,
+        "content_loss_lambda": 100
+    }
+}
