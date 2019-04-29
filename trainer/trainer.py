@@ -73,10 +73,11 @@ class Trainer(BaseTrainer):
                 denormalized_sharp = denormalize(sharp)
                 denormalized_deblurred = denormalize(deblurred)
 
-            # save blurred, sharp and deblurred image
-            self.writer.add_image('blurred', make_grid(denormalized_blurred.cpu()))
-            self.writer.add_image('sharp', make_grid(denormalized_sharp.cpu()))
-            self.writer.add_image('deblurred', make_grid(denormalized_deblurred.cpu()))
+            if batch_idx % 100 == 0:
+                # save blurred, sharp and deblurred image
+                self.writer.add_image('blurred', make_grid(denormalized_blurred.cpu()))
+                self.writer.add_image('sharp', make_grid(denormalized_sharp.cpu()))
+                self.writer.add_image('deblurred', make_grid(denormalized_deblurred.cpu()))
 
             # get D's output
             sharp_discriminator_out = self.discriminator(sharp)

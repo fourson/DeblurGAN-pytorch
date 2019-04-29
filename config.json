@@ -7,7 +7,7 @@
             "data_dir": "data/",
             "batch_size": 1,
             "shuffle": false,
-            "validation_split": 0.1,
+            "validation_split": 0,
             "num_workers": 4
         }
     },
@@ -52,7 +52,7 @@
     "trainer": {
         "epochs": 300,
         "save_dir": "saved/",
-        "save_period": 1,
+        "save_period": 5,
         "verbosity": 2,
         "monitor": "max PSNR",
         "tensorboardX": true,

@@ -144,7 +144,7 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
 ## Tips
 - If you want to use gan_loss instead of wgan_gp_loss, use_sigmoid must be set to true in generator.
 - Aligned dataset could boost the speed of data_loader a little bit. So run make_aligned_data.py to get aligned dataset before training.
-
+- Pretrained weights can be found in folder "pretrained weights". And it contains the weights of both GAN and WGAN_GP.
 
 
 ## Acknowledgements
