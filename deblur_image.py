@@ -39,18 +39,7 @@ def main(blurred_dir, deblurred_dir, resume):
             blurred = sample['blurred'].to(device)
             image_name = sample['image_name'][0]
 
-            # crop the image to 256*256 patches and feed them into the GAN
-            deblurred = torch.zeros_like(blurred)
-            N, C, H, W = blurred.size()
-            fine_size_h = fine_size_w = 256
-            h_patch_num = math.ceil(H / fine_size_h)
-            w_patch_num = math.ceil(W / fine_size_w)
-            for i in range(h_patch_num):
-                for j in range(w_patch_num):
-                    deblurred[:, :, i * fine_size_h:(i + 1) * fine_size_h, j * fine_size_w:(j + 1) * fine_size_w] \
-                        = generator(
-                        blurred[:, :, i * fine_size_h:(i + 1) * fine_size_h, j * fine_size_w:(j + 1) * fine_size_w])
-
+            deblurred = generator(blurred)
             deblurred_img = to_pil_image(denormalize(deblurred).squeeze().cpu())
 
             deblurred_img.save(os.path.join(deblurred_dir, 'deblurred ' + image_name))
