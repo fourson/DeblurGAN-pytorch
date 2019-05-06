@@ -8,7 +8,7 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
 - ![blurred2](demo_pic/2.png) ![deblurred2](demo_pic/deblurred2.png) 
 
 ## Prerequisites
-- NVIDIA GPU + CUDA CuDNN
+- NVIDIA GPU + CUDA cuDNN
 - Python 3.7
 
 ## Folder Structure
@@ -21,6 +21,9 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
   ├── make_aligned_data.py - make aligned data
   ├── config.json - demo config file
   ├── config_aligned.json - demo config file using aligned dataset
+  ├── pretrained weights/ - some pretrained weights for test
+  │   ├── GAN/ - folder of pretrained weights using GAN loss
+  │   └── WGAN_GP/ - folder of pretrained weights using WGAN_GP loss
   │
   ├── base/ - abstract base classes
   │   ├── base_data_loader.py - abstract base class for data loaders
