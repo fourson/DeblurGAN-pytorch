@@ -5,12 +5,6 @@ import torch
 from tqdm import tqdm
 import numpy as np
 
-import data_loader.data_loader as module_data
-import model.loss as module_loss
-import model.metric as module_metric
-import model.model as module_arch
-from utils.util import denormalize
-
 
 def main(resume):
     # load checkpoint
@@ -43,9 +37,6 @@ def main(resume):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     generator = generator.to(device)
     discriminator = discriminator.to(device)
-    if config['n_gpu'] > 1:
-        generator = torch.nn.DataParallel(generator)
-        discriminator = torch.nn.DataParallel(discriminator)
 
     generator.load_state_dict(checkpoint['generator'])
     discriminator.load_state_dict(checkpoint['discriminator'])
@@ -96,5 +87,11 @@ if __name__ == '__main__':
 
     if args.device:
         os.environ["CUDA_VISIBLE_DEVICES"] = args.device
+
+    import data_loader.data_loader as module_data
+    import model.loss as module_loss
+    import model.metric as module_metric
+    import model.model as module_arch
+    from utils.util import denormalize
 
     main(args.resume)

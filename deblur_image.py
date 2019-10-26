@@ -1,14 +1,9 @@
 import os
 import argparse
-import math
 
 from tqdm import tqdm
 from torchvision.transforms.functional import to_pil_image
 import torch
-
-import model.model as module_arch
-from data_loader.data_loader import CustomDataLoader
-from utils.util import denormalize
 
 
 def main(blurred_dir, deblurred_dir, resume):
@@ -26,8 +21,6 @@ def main(blurred_dir, deblurred_dir, resume):
     # prepare model for deblurring
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     generator.to(device)
-    if config['n_gpu'] > 1:
-        generator = torch.nn.DataParallel(generator)
 
     generator.load_state_dict(checkpoint['generator'])
 
@@ -57,5 +50,9 @@ if __name__ == '__main__':
 
     if args.device:
         os.environ["CUDA_VISIBLE_DEVICES"] = args.device
+
+    import model.model as module_arch
+    from data_loader.data_loader import CustomDataLoader
+    from utils.util import denormalize
 
     main(args.blurred, args.deblurred, args.resume)
