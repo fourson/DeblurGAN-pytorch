@@ -21,7 +21,7 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
   ├── make_aligned_data.py - make aligned data
   ├── config.json - demo config file
   ├── config_aligned.json - demo config file using aligned dataset
-  ├── pretrained weights/ - some pretrained weights for test
+  ├── pretrained_weights/ - some pretrained weights for test
   │   ├── GAN/ - folder of pretrained weights using GAN loss
   │   └── WGAN_GP/ - folder of pretrained weights using WGAN_GP loss
   │
@@ -128,7 +128,7 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
  ```
     python train.py --config config.json
  ```
- 
+
 * **Resume**
 ```
     python train.py --resume path/to/checkpoint
@@ -152,8 +152,8 @@ An easy-to-read implementation of [DeblurGAN](https://arxiv.org/pdf/1711.07064.p
 ## Tips
 - If you want to use gan_loss instead of wgan_gp_loss, use_sigmoid must be set to true in generator.
 - Aligned dataset could boost the speed of data_loader a little bit. So run make_aligned_data.py to get aligned dataset before training.
-- Pretrained weights can be found in folder "pretrained weights". And it contains the weights of both GAN and WGAN_GP.
-- **Pretrained weights are stored with git-lfs! You should download them manually in github website or run "git-lfs pull" after clone this repo.**
+- Pretrained weights of both GAN and WGAN_GP are available.
+- **Download pretrained weights： https://drive.google.com/open?id=1w-u0r3hd3cfzSjFuvvuYAs9wA-E-B-11**
 
 ## Acknowledgements
 The organization of this project is based on [PyTorch Template Project](https://github.com/victoresque/pytorch-template)
