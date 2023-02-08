@@ -142,7 +142,8 @@ class Trainer(BaseTrainer):
             }
             adversarial_loss_g = self.adversarial_loss('G', **kwargs)
             content_loss_g = self.content_loss(deblurred, sharp) * content_loss_lambda
-            generator_loss = adversarial_loss_g + content_loss_g
+            # in the recent version of PyTorch .detach() is required
+            generator_loss = adversarial_loss_g.detach() + content_loss_g
 
             self.writer.add_scalar('adversarial_loss_g', adversarial_loss_g.item())
             self.writer.add_scalar('content_loss_g', content_loss_g.item())
